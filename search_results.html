@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results | Beauty Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'lavender-main': '#8b5cf6',
+                        'lavender-soft': '#f5f3ff',
+                        'lavender-glow': '#ddd6fe',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        .service-card:hover img { transform: scale(1.1); }
+    </style>
+</head>
+<body class="bg-lavender-soft min-h-screen p-4 md:p-12">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+            <div>
+                <h1 class="text-4xl font-serif font-bold text-gray-900">Results for "<span id="queryText" class="text-lavender-main"></span>"</h1>
+                <p class="text-gray-500 mt-2 font-medium">Discover the best campus talent for your next look.</p>
+            </div>
+            <a href="customer_dashboard.html" class="bg-white text-gray-700 px-8 py-4 rounded-[2rem] font-bold shadow-sm hover:text-lavender-main transition border border-lavender-glow flex items-center">
+                <i class="fas fa-arrow-left mr-2"></i> My Dashboard
+            </a>
+        </header>
+
+        <div id="resultsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <div class="h-80 bg-white/50 animate-pulse rounded-[2.5rem]"></div>
+            <div class="h-80 bg-white/50 animate-pulse rounded-[2.5rem]"></div>
+            <div class="h-80 bg-white/50 animate-pulse rounded-[2.5rem]"></div>
+        </div>
+    </div>
+
+    <div id="bookingModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-[100] backdrop-blur-sm p-4">
+        <div class="bg-white w-full max-w-md rounded-[3rem] p-10 shadow-2xl relative transform transition-all">
+            <button onclick="closeModal()" class="absolute top-8 right-8 text-gray-400 hover:text-black text-2xl">&times;</button>
+            
+            <div class="w-16 h-16 bg-lavender-soft rounded-2xl flex items-center justify-center text-lavender-main mb-6">
+                <i class="fas fa-calendar-check text-2xl"></i>
+            </div>
+            
+            <h3 class="text-3xl font-bold mb-2 text-gray-900">Book Session</h3>
+            <p id="modalServiceName" class="text-lavender-main font-bold mb-8 text-lg underline decoration-2 underline-offset-4"></p>
+            
+            <form id="bookingForm" class="space-y-6">
+                <input type="hidden" id="selectedServiceId">
+                
+                <div class="space-y-3">
+                    <label class="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Appointment Date & Time</label>
+                    <input type="datetime-local" id="appointmentDate" 
+                           class="w-full p-5 bg-lavender-soft rounded-[1.5rem] border-2 border-transparent focus:border-lavender-main outline-none transition font-medium" 
+                           required>
+                </div>
+
+                <button type="submit" id="confirmBtn" class="w-full bg-black text-white py-5 rounded-[1.5rem] font-bold shadow-xl hover:bg-lavender-main transition transform active:scale-95">
+                    Request Appointment
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const query = params.get('q') || 'Beauty Services';
+        const token = localStorage.getItem('token');
+        const API_BASE = 'http://localhost:5000/api';
+        
+        document.getElementById('queryText').innerText = query;
+
+        async function fetchResults() {
+            const grid = document.getElementById('resultsGrid');
+            try {
+                const res = await fetch(`${API_BASE}/services/search?q=${query}`);
+                const services = await res.json();
+                
+                if (services.length === 0) {
+                    grid.innerHTML = `
+                        <div class="col-span-full text-center py-20 bg-white rounded-[3rem] border border-dashed border-lavender-glow">
+                            <i class="fas fa-search text-5xl text-lavender-glow mb-6"></i>
+                            <h2 class="text-2xl font-bold text-gray-400">No services found for "${query}"</h2>
+                            <p class="text-gray-400 mt-2">Try searching for "Hair", "Nails", or "Makeup".</p>
+                            <button onclick="window.location.href='customer_dashboard.html'" class="mt-8 text-lavender-main font-bold">Return to Search</button>
+                        </div>`;
+                    return;
+                }
+
+                grid.innerHTML = services.map(s => `
+                    <div class="service-card bg-white rounded-[2.5rem] overflow-hidden shadow-lg border border-white hover:shadow-2xl transition-all duration-500 group">
+                        <div class="relative h-56 overflow-hidden">
+                            <img src="http://localhost:5000/uploads/services/${s.image_url || 'default-service.jpg'}" 
+                                 class="w-full h-full object-cover transition-transform duration-700 ease-in-out"
+                                 onerror="this.src='https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&q=80&w=800'">
+                            <div class="absolute top-4 left-4">
+                                <span class="bg-white/90 backdrop-blur px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-tighter text-lavender-main shadow-sm">
+                                    ${s.category}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="p-8">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-xl font-black text-gray-900 group-hover:text-lavender-main transition-colors">${s.title}</h3>
+                                    <p class="text-gray-400 text-sm font-bold mt-1">
+                                        <i class="fas fa-user-circle mr-1"></i> ${s.stylist_name}
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <p class="text-gray-500 text-xs line-clamp-2 mb-6 font-medium">
+                                ${s.description || 'Professional service offered on campus. High quality results guaranteed.'}
+                            </p>
+
+                            <div class="flex justify-between items-center pt-6 border-t border-lavender-soft">
+                                <div>
+                                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Starting from</p>
+                                    <span class="text-2xl font-black text-gray-900">KSh ${s.price}</span>
+                                </div>
+                                <button onclick="openBookingModal(${s.id}, '${s.title}')" 
+                                        class="bg-black text-white px-8 py-3 rounded-2xl text-xs font-bold shadow-lg hover:bg-lavender-main transition-all transform active:scale-95">
+                                    BOOK
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                grid.innerHTML = '<p class="col-span-full text-center text-red-500 font-bold p-10 bg-red-50 rounded-3xl">Network Error: Could not connect to BeautyHub server.</p>';
+            }
+        }
+
+        function openBookingModal(id, title) {
+            if (!token) {
+                alert("Please log in to your student account to book a session!");
+                window.location.href = 'landing.html';
+                return;
+            }
+            document.getElementById('selectedServiceId').value = id;
+            document.getElementById('modalServiceName').innerText = title;
+            const modal = document.getElementById('bookingModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            // Prevent body scroll when modal is open
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('bookingModal').classList.add('hidden');
+            document.getElementById('bookingModal').classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        }
+
+        document.getElementById('bookingForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const confirmBtn = document.getElementById('confirmBtn');
+            confirmBtn.innerText = "Processing...";
+            confirmBtn.disabled = true;
+
+            const service_id = document.getElementById('selectedServiceId').value;
+            const appointment_date = document.getElementById('appointmentDate').value;
+
+            try {
+                const res = await fetch(`${API_BASE}/bookings/create`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ service_id, appointment_date })
+                });
+
+                if (res.ok) {
+                    alert("Glow-up requested! Check your dashboard for confirmation.");
+                    window.location.href = 'customer_dashboard.html';
+                } else {
+                    const data = await res.json();
+                    alert(data.message || "Booking failed.");
+                    confirmBtn.innerText = "Confirm Booking";
+                    confirmBtn.disabled = false;
+                }
+            } catch (err) {
+                alert("Could not reach server.");
+                confirmBtn.innerText = "Confirm Booking";
+                confirmBtn.disabled = false;
+            }
+        };
+
+        // Initialize fetch on load
+        fetchResults();
+    </script>
+</body>
+</html>

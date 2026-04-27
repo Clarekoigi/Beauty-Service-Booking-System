@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beauty Service Booking System | Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'lavender-main': '#8b5cf6',
+                        'lavender-deep': '#6d28d9',
+                        'lavender-soft': '#f5f3ff',
+                        'lavender-glow': '#ddd6fe',
+                    },
+                    borderRadius: {
+                        '4xl': '2rem',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .hero-gradient {
+            background: radial-gradient(circle at top right, #ddd6fe, #ffffff, #f5f3ff);
+        }
+        .lavender-shadow {
+            box-shadow: 0 10px 40px -10px rgba(139, 92, 246, 0.3);
+        }
+        .modal-active { display: flex !important; }
+        html { scroll-behavior: smooth; }
+        
+        /* Logo Styling */
+        .brand-logo {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body class="bg-lavender-soft font-sans text-gray-900">
+
+    <nav class="glass sticky top-0 z-50 w-full border-b border-lavender-glow">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.reload()">
+                    <img src="logo.jpeg" alt="Logo" class="brand-logo">
+                    <span class="text-2xl font-serif font-bold tracking-tight">Beauty Service <span class="text-lavender-main">Booking System</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8 font-semibold text-gray-600">
+                    <a href="#services" class="hover:text-lavender-main transition">Explore</a>
+                    <a href="#join-section" class="hover:text-lavender-main transition">Join Us</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="toggleModal('login')" class="text-sm font-bold text-gray-700 hover:text-lavender-main transition">Log In</button>
+                    <button onclick="toggleModal('register')" class="bg-lavender-main text-white px-8 py-3 rounded-full text-sm font-bold shadow-lg shadow-lavender-main/40 hover:bg-lavender-deep transition-all transform hover:scale-105">Get Started</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative hero-gradient pt-24 pb-32 px-6 overflow-hidden">
+        <div class="absolute top-20 left-10 w-72 h-72 bg-lavender-main opacity-10 rounded-full blur-3xl animate-pulse"></div>
+        <div class="max-w-7xl mx-auto text-center relative z-10">
+            <span class="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-widest text-lavender-main uppercase bg-lavender-glow/30 rounded-full border border-lavender-main/20">
+                DeKUT's Official Beauty Network
+            </span>
+            <h1 class="text-6xl lg:text-8xl font-serif font-extrabold text-gray-900 leading-tight mb-8">
+                Your Beauty, <br><span class="text-lavender-main relative">Redefined.
+                    <svg class="absolute -bottom-2 left-0 w-full" viewBox="0 0 338 12" fill="none"><path d="M3 9C118.957 4.47226 254.444 -3.52774 335 9" stroke="#8b5cf6" stroke-width="5" stroke-linecap="round"/></svg>
+                </span>
+            </h1>
+            <p class="text-xl text-gray-500 mb-12 max-w-2xl mx-auto font-medium">
+                The ultimate destination for student stylists. Discover, book, and glow with verified campus talent.
+            </p>
+            
+            <div class="max-w-3xl mx-auto glass p-3 rounded-3xl md:rounded-full lavender-shadow border-white">
+                <form id="searchForm" class="flex flex-col md:flex-row items-center">
+                    <div class="flex items-center w-full px-6 mb-2 md:mb-0">
+                        <i class="fas fa-search text-lavender-main mr-4 text-xl"></i>
+                        <input type="text" id="searchInput" placeholder="Search for Braids, Nails, Piercings..." class="w-full bg-transparent p-4 outline-none text-gray-800 placeholder-gray-400 font-medium">
+                    </div>
+                    <button type="submit" class="w-full md:w-auto bg-black text-white px-12 py-5 rounded-2xl md:rounded-full font-bold hover:bg-lavender-main transition-all shadow-xl">Find Stylists</button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <section id="services" class="max-w-7xl mx-auto px-6 py-24">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-serif font-bold text-gray-900">Core Services</h2>
+            <p class="text-lavender-main font-bold tracking-widest uppercase text-xs mt-2">Professional Campus Solutions</p>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
+            <div onclick="filterService('Hair')" class="group bg-white p-2 rounded-[2.5rem] lavender-shadow hover:translate-y-[-10px] transition-all cursor-pointer">
+                <div class="bg-lavender-soft rounded-[2rem] p-8 text-center border border-lavender-glow group-hover:bg-lavender-main transition-colors duration-500">
+                    <div class="w-20 h-20 bg-white text-lavender-main rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl shadow-sm group-hover:scale-110 transition-transform">
+                        <i class="fas fa-scissors"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 group-hover:text-white transition-colors">Hair Styling</h3>
+                    <p class="text-gray-500 text-sm group-hover:text-lavender-soft transition-colors">Braids & treatment.</p>
+                </div>
+            </div>
+
+            <div onclick="filterService('Nails')" class="group bg-white p-2 rounded-[2.5rem] lavender-shadow hover:translate-y-[-10px] transition-all cursor-pointer">
+                <div class="bg-lavender-soft rounded-[2rem] p-8 text-center border border-lavender-glow group-hover:bg-lavender-main transition-colors duration-500">
+                    <div class="w-20 h-20 bg-white text-lavender-main rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl shadow-sm group-hover:scale-110 transition-transform">
+                        <i class="fas fa-hand-sparkles"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 group-hover:text-white transition-colors">Nail Art</h3>
+                    <p class="text-gray-500 text-sm group-hover:text-lavender-soft transition-colors">Acrylics & Gel.</p>
+                </div>
+            </div>
+
+            <div onclick="filterService('Makeup')" class="group bg-white p-2 rounded-[2.5rem] lavender-shadow hover:translate-y-[-10px] transition-all cursor-pointer">
+                <div class="bg-lavender-soft rounded-[2rem] p-8 text-center border border-lavender-glow group-hover:bg-lavender-main transition-colors duration-500">
+                    <div class="w-20 h-20 bg-white text-lavender-main rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl shadow-sm group-hover:scale-110 transition-transform">
+                        <i class="fas fa-magic"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 group-hover:text-white transition-colors">Make-up</h3>
+                    <p class="text-gray-500 text-sm group-hover:text-lavender-soft transition-colors">Glam & Soft.</p>
+                </div>
+            </div>
+
+            <div onclick="filterService('Skin')" class="group bg-white p-2 rounded-[2.5rem] lavender-shadow hover:translate-y-[-10px] transition-all cursor-pointer">
+                <div class="bg-lavender-soft rounded-[2rem] p-8 text-center border border-lavender-glow group-hover:bg-lavender-main transition-colors duration-500">
+                    <div class="w-20 h-20 bg-white text-lavender-main rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl shadow-sm group-hover:scale-110 transition-transform">
+                        <i class="fas fa-spa"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 group-hover:text-white transition-colors">Skin Care</h3>
+                    <p class="text-gray-500 text-sm group-hover:text-lavender-soft transition-colors">Facials & Care.</p>
+                </div>
+            </div>
+
+            <div onclick="filterService('Piercing')" class="group bg-white p-2 rounded-[2.5rem] lavender-shadow hover:translate-y-[-10px] transition-all cursor-pointer">
+                <div class="bg-lavender-soft rounded-[2rem] p-8 text-center border border-lavender-glow group-hover:bg-lavender-main transition-colors duration-500">
+                    <div class="w-20 h-20 bg-white text-lavender-main rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl shadow-sm group-hover:scale-110 transition-transform">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 group-hover:text-white transition-colors">Piercing</h3>
+                    <p class="text-gray-500 text-sm group-hover:text-lavender-soft transition-colors">Ear, Nose & Body art.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="join-section" class="max-w-7xl mx-auto px-6 py-24">
+        <div class="bg-black rounded-[3rem] p-12 lg:p-20 relative overflow-hidden text-center text-white shadow-2xl">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-lavender-main opacity-20 blur-3xl"></div>
+            <h2 class="text-5xl font-serif font-bold mb-6">Ready to join the family?</h2>
+            <p class="text-gray-400 mb-12 max-w-xl mx-auto text-lg">Whether you're a skilled creator or a student looking to glow, we've got you covered.</p>
+            <div class="flex flex-col md:flex-row gap-6 justify-center">
+                <button onclick="registerAs('customer')" class="glass px-12 py-6 rounded-3xl text-black font-bold text-xl hover:bg-lavender-main hover:text-white transition-all">I'm a Customer</button>
+                <button onclick="registerAs('provider')" class="bg-lavender-main px-12 py-6 rounded-3xl text-white font-bold text-xl hover:bg-white hover:text-lavender-main transition-all shadow-xl">I'm a Provider</button>
+            </div>
+        </div>
+    </section>
+
+    <div id="authModal" class="fixed inset-0 bg-lavender-main/20 backdrop-blur-xl hidden items-center justify-center z-[100] p-4">
+        <div class="bg-white w-full max-w-md rounded-[2.5rem] p-10 relative shadow-2xl">
+            <button onclick="toggleModal()" class="absolute top-6 right-6 text-gray-400 hover:text-black text-2xl">&times;</button>
+            <h2 id="modalTitle" class="text-3xl font-serif font-bold text-center mb-8 text-black">Welcome Back</h2>
+            <form id="authForm" class="space-y-4">
+                <input type="hidden" id="userRole" value="customer">
+                <div class="space-y-4" id="registrationFields">
+                    <input type="email" id="email" placeholder="Campus Email" class="w-full p-5 bg-lavender-soft rounded-2xl outline-none border-2 border-transparent focus:border-lavender-main transition" required>
+                    <input type="password" id="password" placeholder="Password" class="w-full p-5 bg-lavender-soft rounded-2xl outline-none border-2 border-transparent focus:border-lavender-main transition" required>
+                </div>
+                <button type="submit" id="submitBtn" class="w-full bg-black text-white py-5 rounded-2xl font-bold hover:bg-lavender-main transition shadow-xl">Continue</button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="py-12 text-center border-t border-lavender-glow">
+        <div class="flex flex-col items-center gap-3 mb-4">
+            <img src="logo.jpeg" alt="Logo" class="brand-logo opacity-80">
+            <p class="font-serif font-bold text-3xl text-black">Beauty Service <span class="text-lavender-main">Booking System</span></p>
+        </div>
+        <p class="text-gray-400 text-sm mt-4">Built with 💜 by Students for Students. © 2026</p>
+    </footer>
+
+    <script>
+        function toggleModal(type, role = 'customer') {
+            const modal = document.getElementById('authModal');
+            const title = document.getElementById('modalTitle');
+            const roleInput = document.getElementById('userRole');
+            if(roleInput) roleInput.value = role;
+            if (type === 'login') { title.innerText = 'Log In'; } 
+            else if (type === 'register') { title.innerText = `Register as ${role.charAt(0).toUpperCase() + role.slice(1)}`; }
+            modal.classList.toggle('modal-active');
+        }
+
+        function registerAs(role) { toggleModal('register', role); }
+
+        function filterService(type) {
+            document.getElementById('searchInput').value = type;
+            document.querySelector('#searchForm button').click();
+        }
+
+        document.getElementById('authForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('userRole').value;
+            const isLogin = document.getElementById('modalTitle').innerText === 'Log In';
+            const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+            const payload = isLogin ? { email, password } : { email, password, role, username: email.split('@')[0] };
+
+            try {
+                const response = await fetch(`http://localhost:5000${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    if (isLogin) {
+                        localStorage.setItem('token', data.token);
+                        localStorage.setItem('role', data.role); 
+                        localStorage.setItem('username', data.username);
+                        window.location.href = data.role === 'provider' ? 'provider_dashboard.html' : 'customer_dashboard.html';
+                    } else {
+                        alert(`Registration successful! Now please log in.`);
+                        toggleModal(); toggleModal('login');
+                    }
+                } else { alert(data.message || "An error occurred"); }
+            } catch (err) { alert("Server connection failed."); }
+        });
+
+        document.getElementById('searchForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const query = document.getElementById('searchInput').value;
+            if (query.trim()) { window.location.href = `search_results.html?q=${encodeURIComponent(query)}`; }
+        });
+
+        window.onclick = (event) => {
+            const modal = document.getElementById('authModal');
+            if (event.target == modal) toggleModal();
+        }
+    </script>
+</body>
+</html>

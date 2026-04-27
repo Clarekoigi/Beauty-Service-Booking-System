@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Beauty Service Booking System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'lavender-main': '#8b5cf6',
+                        'lavender-soft': '#f5f3ff',
+                        'lavender-glow': '#ddd6fe',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); }
+        .status-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+        .nav-link-active { background-color: #8b5cf6; color: white; box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.2); }
+        .star-btn { transition: all 0.2s ease; cursor: pointer; }
+        /* Logo Consistency Styling */
+        .brand-logo { width: 32px; height: 32px; object-fit: cover; border-radius: 8px; }
+    </style>
+</head>
+<body class="bg-lavender-soft min-h-screen font-sans text-gray-900">
+
+    <div class="flex">
+        <aside class="w-64 bg-white h-screen sticky top-0 border-r border-lavender-glow p-6 hidden md:block shadow-sm">
+            <div class="flex items-center gap-2 mb-10 cursor-pointer" onclick="window.location.href='landing.html'">
+                <img src="logo.jpeg" alt="Logo" class="brand-logo shadow-sm">
+                <span class="text-xl font-serif font-bold italic">BeautyHub</span>
+            </div>
+            <nav class="space-y-4">
+                <a href="#" class="nav-link-active flex items-center gap-3 p-4 rounded-2xl transition"><i class="fas fa-th-large"></i> <span class="font-bold">Overview</span></a>
+                <a href="#appointments-section" class="flex items-center gap-3 p-4 text-gray-500 hover:bg-lavender-soft rounded-2xl transition"><i class="fas fa-calendar-alt"></i> <span class="font-bold">Bookings</span></a>
+                <button onclick="logout()" class="w-full flex items-center gap-3 p-4 text-red-400 hover:bg-red-50 rounded-2xl transition mt-auto"><i class="fas fa-sign-out-alt"></i> <span class="font-bold">Logout</span></button>
+            </nav>
+        </aside>
+
+        <main class="flex-grow p-6 lg:p-10">
+            <header class="flex justify-between items-center mb-10">
+                <div class="flex items-center gap-3">
+                    <img src="logo.jpeg" alt="Logo" class="brand-logo md:hidden shadow-sm">
+                    <div>
+                        <h1 class="text-3xl font-serif font-bold">Hello, <span id="displayName" class="text-lavender-main">Student</span>! 👋</h1>
+                        <p class="text-gray-500 font-medium">Ready for your next glow-up?</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button onclick="fetchNotifications()" class="w-10 h-10 bg-white rounded-full flex items-center justify-center border border-lavender-glow text-gray-400 relative">
+                        <i class="fas fa-bell"></i>
+                        <span id="notifDot" class="hidden absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button>
+                    <img id="userAvatar" src="https://ui-avatars.com/api/?name=User&background=8b5cf6&color=fff" class="w-12 h-12 rounded-full border-2 border-white shadow-md">
+                </div>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div class="glass-card p-6 rounded-3xl shadow-sm border-l-4 border-lavender-main">
+                    <p class="text-gray-400 text-sm font-bold uppercase">Upcoming</p>
+                    <h2 id="statUpcoming" class="text-3xl font-bold mt-1">0</h2>
+                </div>
+                <div class="glass-card p-6 rounded-3xl shadow-sm">
+                    <p class="text-gray-400 text-sm font-bold uppercase">Total Bookings</p>
+                    <h2 id="statTotal" class="text-3xl font-bold mt-1">0</h2>
+                </div>
+                <div class="glass-card p-6 rounded-3xl shadow-sm text-green-600 border-l-4 border-green-500">
+                    <p class="text-gray-400 text-sm font-bold uppercase">Reward Points</p>
+                    <h2 class="text-3xl font-bold mt-1"><span id="balance">150</span> ✨</h2>
+                </div>
+            </div>
+
+            <div id="appointments-section" class="glass-card rounded-[2.5rem] overflow-hidden shadow-xl border-white mb-10">
+                <div class="p-8 border-b border-lavender-glow flex justify-between items-center bg-white/50">
+                    <h3 class="text-xl font-bold text-gray-900">My Recent Glow-ups</h3>
+                    <button onclick="window.location.href='landing.html#services'" class="bg-black text-white px-6 py-2 rounded-xl font-bold text-sm hover:bg-lavender-main transition transform active:scale-95">New Booking</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="bg-lavender-soft/50 text-gray-500 text-xs uppercase tracking-widest">
+                            <tr>
+                                <th class="p-6">Stylist & Location</th>
+                                <th class="p-6">Service</th>
+                                <th class="p-6">Date</th>
+                                <th class="p-6">Status</th>
+                                <th class="p-6 text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appointmentTableBody" class="divide-y divide-lavender-glow">
+                            <tr><td colspan="5" class="p-10 text-center italic text-gray-400">Syncing your schedule...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-[2.5rem] p-8 shadow-xl border-white">
+                <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                    <i class="fas fa-star text-yellow-400"></i> My Feedback History
+                </h3>
+                <div id="reviewsList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <p class="text-gray-400 italic">No reviews posted yet.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="reviewModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-[100] backdrop-blur-sm p-4">
+        <div class="bg-white p-10 rounded-[3rem] max-w-md w-full shadow-2xl relative">
+            <button onclick="toggleReviewModal()" class="absolute top-8 right-8 text-gray-400 hover:text-black text-2xl">&times;</button>
+            <h3 class="text-2xl font-bold mb-2 text-gray-900 text-center">Rate your Stylist</h3>
+            <p class="text-gray-500 mb-6 text-sm text-center">Your feedback helps the campus community!</p>
+            
+            <div class="flex gap-2 mb-8 justify-center">
+                <input type="hidden" id="selectedRating" value="5">
+                <button onclick="setRating(1)" class="star-btn text-3xl text-gray-300"><i class="fas fa-star"></i></button>
+                <button onclick="setRating(2)" class="star-btn text-3xl text-gray-300"><i class="fas fa-star"></i></button>
+                <button onclick="setRating(3)" class="star-btn text-3xl text-gray-300"><i class="fas fa-star"></i></button>
+                <button onclick="setRating(4)" class="star-btn text-3xl text-gray-300"><i class="fas fa-star"></i></button>
+                <button onclick="setRating(5)" class="star-btn text-3xl text-yellow-400"><i class="fas fa-star"></i></button>
+            </div>
+
+            <textarea id="reviewComment" class="w-full p-5 bg-lavender-soft rounded-2xl border-none h-32 outline-none focus:ring-2 focus:ring-lavender-main transition" placeholder="Tell us about the service..."></textarea>
+            
+            <div class="flex gap-4 mt-8">
+                <button id="submitReviewBtn" class="flex-1 bg-lavender-main text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-black transition">Post Review</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        const username = localStorage.getItem('username');
+        const API_BASE = 'http://localhost:5000/api';
+        let currentBookingId = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!token) { window.location.href = 'landing.html'; return; }
+            if (username) {
+                document.getElementById('displayName').innerText = username;
+                document.getElementById('userAvatar').src = `https://ui-avatars.com/api/?name=${username}&background=8b5cf6&color=fff`;
+            }
+            fetchData();
+        });
+
+        function setRating(n) {
+            document.getElementById('selectedRating').value = n;
+            const stars = document.querySelectorAll('.star-btn');
+            stars.forEach((s, i) => {
+                s.classList.toggle('text-yellow-400', i < n);
+                s.classList.toggle('text-gray-300', i >= n);
+            });
+        }
+
+        async function fetchData() {
+            try {
+                const res = await fetch(`${API_BASE}/bookings/my-bookings`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const bookings = await res.json();
+                renderTable(bookings);
+                updateStats(bookings);
+
+                const revRes = await fetch(`${API_BASE}/reviews/my-reviews`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const reviews = await revRes.json();
+                renderReviews(reviews);
+
+            } catch (err) { console.error("Sync error:", err); }
+        }
+
+        function renderTable(bookings) {
+            const tbody = document.getElementById('appointmentTableBody');
+            if (bookings.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-20 text-center text-gray-400">No bookings yet. Ready for a glow up?</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = bookings.map(b => {
+                const locationText = (['Confirmed', 'Accepted', 'Paid', 'Ready'].includes(b.status) && b.hostel_location) 
+                    ? `<div class="text-[10px] text-lavender-main font-bold mt-1 tracking-tight animate-pulse"><i class="fas fa-map-marker-alt"></i> ${b.hostel_location}</div>` 
+                    : '';
+
+                return `
+                    <tr class="hover:bg-lavender-soft/30 transition border-b border-lavender-glow last:border-0">
+                        <td class="p-6">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-lavender-glow rounded-xl flex items-center justify-center text-lavender-main font-bold">
+                                    ${b.stylist_name ? b.stylist_name[0].toUpperCase() : 'S'}
+                                </div>
+                                <div>
+                                    <span class="font-bold block text-gray-900">${b.stylist_name || 'Stylist'}</span>
+                                    ${locationText}
+                                </div>
+                            </div>
+                        </td>
+                        <td class="p-6 text-gray-600 font-medium">${b.service_name}</td>
+                        <td class="p-6 text-gray-600">${new Date(b.appointment_date).toLocaleDateString()}</td>
+                        <td class="p-6"><span class="status-badge ${getStatusStyles(b.status)}">${b.status}</span></td>
+                        <td class="p-6 text-center">
+                            ${getActionBtn(b)}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function getActionBtn(b) {
+            if (b.status === 'Pending') return `<span class="text-gray-400 text-xs italic">Waiting for Stylist...</span>`;
+            if (b.status === 'Confirmed' || b.status === 'Accepted') return `<button onclick="payDeposit(${b.id})" class="bg-green-500 text-white px-5 py-2 rounded-xl text-xs font-bold shadow-md hover:bg-green-600 transition transform active:scale-95">Pay Deposit (KSh 500)</button>`;
+            if (b.status === 'Paid' || b.status === 'Ready') return b.phone_number ? `<a href="https://wa.me/${b.phone_number}" target="_blank" class="bg-green-100 text-green-600 px-5 py-2 rounded-xl text-[10px] font-black uppercase hover:bg-green-200 transition inline-flex items-center gap-1"><i class="fab fa-whatsapp"></i> Chat Stylist</a>` : `<span class="text-green-500 font-bold text-xs"><i class="fas fa-check-double"></i> Verified</span>`;
+            if (b.status === 'Completed') return `<button onclick="openReviewModal(${b.id})" class="bg-lavender-main text-white px-5 py-2 rounded-xl text-xs font-bold shadow-md hover:bg-black transition">Rate Service</button>`;
+            return `<span class="text-gray-300 text-xs">---</span>`;
+        }
+
+        document.getElementById('submitReviewBtn').onclick = async () => {
+            const comment = document.getElementById('reviewComment').value;
+            const rating = document.getElementById('selectedRating').value;
+            if(!comment) return alert("Please add a comment!");
+            const res = await fetch(`${API_BASE}/reviews/add`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ booking_id: currentBookingId, comment, rating })
+            });
+            if(res.ok) { alert("Review shared! Keep glowing."); toggleReviewModal(); fetchData(); }
+            else { alert("You can only review completed services."); }
+        };
+
+        async function payDeposit(bookingId) {
+            const phone = prompt("Enter M-Pesa Number (e.g., 2547...):");
+            if (!phone) return;
+            alert("STK Push initiated. Please check your phone.");
+            const res = await fetch(`${API_BASE}/bookings/pay-deposit`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ booking_id: bookingId, amount: 500, phone })
+            });
+            if(res.ok) { alert("Payment Successful! Booking is now Paid."); fetchData(); }
+        }
+
+        function renderReviews(reviews) {
+            const container = document.getElementById('reviewsList');
+            if (!reviews.length) return;
+            container.innerHTML = reviews.map(r => `
+                <div class="p-6 bg-white rounded-[1.5rem] border border-lavender-glow shadow-sm hover:shadow-md transition">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="text-[10px] font-black text-lavender-main uppercase tracking-widest">${r.service_name}</span>
+                        <div class="text-yellow-400 text-xs">${'<i class="fas fa-star"></i>'.repeat(r.rating)}</div>
+                    </div>
+                    <p class="text-gray-700 text-sm italic font-medium leading-relaxed">"${r.comment}"</p>
+                    <div class="mt-4 pt-4 border-t border-dashed border-lavender-glow">
+                        <span class="text-[10px] font-bold text-gray-400">Stylist: ${r.stylist_name}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openReviewModal(id) { currentBookingId = id; document.getElementById('reviewModal').classList.remove('hidden'); document.getElementById('reviewModal').classList.add('flex'); }
+        function toggleReviewModal() { document.getElementById('reviewModal').classList.add('hidden'); document.getElementById('reviewModal').classList.remove('flex'); }
+        function logout() { localStorage.clear(); window.location.href = 'landing.html'; }
+        function updateStats(bookings) {
+            document.getElementById('statTotal').innerText = bookings.length;
+            document.getElementById('statUpcoming').innerText = bookings.filter(b => ['Confirmed', 'Pending', 'Paid'].includes(b.status)).length;
+        }
+        function getStatusStyles(status) {
+            const colors = { 'Pending': 'bg-yellow-100 text-yellow-600', 'Confirmed': 'bg-blue-100 text-blue-600', 'Paid': 'bg-green-100 text-green-600', 'Completed': 'bg-purple-100 text-purple-600', 'Cancelled': 'bg-red-100 text-red-600' };
+            return colors[status] || 'bg-gray-100 text-gray-500';
+        }
+
+        async function fetchNotifications() {
+            const res = await fetch(`${API_BASE}/bookings/notifications`, { headers: { 'Authorization': `Bearer ${token}` } });
+            const data = await res.json();
+            alert(data.length ? data.map(n => `• ${n.message}`).join('\n') : "No new notifications.");
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provider Dashboard | Beauty Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = { theme: { extend: { colors: { 'lavender-main': '#8b5cf6', 'lavender-soft': '#f5f3ff', 'lavender-glow': '#ddd6fe' } } } }
+    </script>
+    <style>
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); }
+        .nav-link-active { background-color: #8b5cf6; color: white; box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.2); }
+        /* Logo Styling */
+        .dashboard-logo { width: 40px; height: 40px; object-fit: cover; border-radius: 8px; }
+    </style>
+</head>
+<body class="bg-lavender-soft min-h-screen font-sans text-gray-900">
+
+    <div class="flex">
+        <aside class="w-64 bg-white h-screen sticky top-0 border-r border-lavender-glow p-6 hidden md:block shadow-xl">
+            <div class="flex items-center gap-2 mb-10 cursor-pointer" onclick="window.location.href='landing.html'">
+                <img src="logo.jpeg" alt="Logo" class="dashboard-logo shadow-sm">
+                <span class="text-xl font-bold italic">BeautyHub</span>
+            </div>
+            <nav class="space-y-4">
+                <a href="#" class="nav-link-active flex items-center gap-3 p-4 rounded-2xl transition"><i class="fas fa-th-large"></i> <b>Overview</b></a>
+                <button onclick="toggleProfileModal()" class="w-full flex items-center gap-3 p-4 text-gray-500 hover:bg-lavender-soft hover:text-lavender-main rounded-2xl transition text-left font-bold"><i class="fas fa-id-card"></i> <b>Profile Info</b></button>
+                <a href="portfolio.html" class="flex items-center gap-3 p-4 text-gray-500 hover:bg-lavender-soft hover:text-lavender-main rounded-2xl transition"><i class="fas fa-images"></i> <b>Portfolio</b></a>
+                <button onclick="logout()" class="w-full flex items-center gap-3 p-4 text-red-500 hover:bg-red-50 rounded-2xl mt-20 transition"><i class="fas fa-sign-out-alt"></i> <b>Logout</b></button>
+            </nav>
+        </aside>
+
+        <main class="flex-grow p-6 lg:p-10">
+            <header class="flex justify-between items-center mb-10">
+                <div class="flex items-center gap-4">
+                    <img src="logo.jpeg" alt="Logo" class="dashboard-logo md:hidden shadow-sm">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">Hello, <span id="stylistName" class="text-lavender-main">Stylist</span> 👋</h1>
+                        <p class="text-gray-500 font-medium">Manage your campus Beauty catalogue.</p>
+                    </div>
+                </div>
+                <div class="flex gap-3 items-center">
+                    <div class="relative mr-4">
+                        <button onclick="toggleNotifDropdown()" class="text-gray-400 hover:text-lavender-main transition text-xl relative">
+                            <i class="fas fa-bell"></i>
+                            <span id="notifBadge" class="hidden absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span>
+                        </button>
+                        <div id="notifDropdown" class="hidden absolute right-0 mt-4 w-72 bg-white rounded-2xl shadow-2xl border border-lavender-glow z-[150] p-4">
+                            <h4 class="font-bold border-b pb-2 mb-2 text-gray-800">Notifications</h4>
+                            <div id="notifList" class="space-y-3 max-h-60 overflow-y-auto text-sm">
+                                <p class="text-gray-400 italic text-center py-4">No new notifications</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="toggleServiceModal()" class="bg-lavender-soft text-lavender-main border border-lavender-main px-6 py-3 rounded-full font-bold hover:bg-lavender-main hover:text-white transition shadow-sm">Add Service</button>
+                    <button onclick="toggleUploadModal()" class="bg-black text-white px-8 py-3 rounded-full font-bold hover:bg-lavender-main transition shadow-lg transform hover:scale-105">Add Work</button>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div class="glass-card p-6 rounded-3xl border-l-4 border-lavender-main shadow-sm">
+                    <p class="text-gray-400 text-xs font-bold uppercase tracking-widest">Total Bookings</p>
+                    <h2 id="bookingsStat" class="text-4xl font-bold mt-1 text-gray-900">0</h2>
+                </div>
+                <div class="glass-card p-6 rounded-3xl border-l-4 border-green-500 shadow-sm">
+                    <p class="text-gray-400 text-xs font-bold uppercase tracking-widest">Earnings (KSh)</p>
+                    <h2 id="earningsStat" class="text-4xl font-bold mt-1 text-gray-900">0</h2>
+                </div>
+                <div class="glass-card p-6 rounded-3xl border-l-4 border-yellow-400 shadow-sm">
+                    <p class="text-gray-400 text-xs font-bold uppercase tracking-widest">Rating</p>
+                    <h2 id="ratingStat" class="text-4xl font-bold mt-1 text-gray-900">5.0</h2>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div class="glass-card rounded-[2.5rem] p-8 shadow-xl border-white h-fit">
+                    <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                        <i class="fas fa-clock text-lavender-main"></i> Pending Appointments
+                    </h3>
+                    <div id="bookingList" class="space-y-4">
+                        <div class="text-center py-10 text-gray-400 italic">Syncing...</div>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-[2.5rem] p-8 shadow-xl border-white h-fit">
+                    <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                        <i class="fas fa-comment-dots text-lavender-main"></i> Client Feedback
+                    </h3>
+                    <div id="providerReviewsList" class="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+                        <p class="text-center py-10 text-gray-400 italic">No reviews yet.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-[2.5rem] p-8 shadow-xl border-white mt-10">
+                <h3 class="text-xl font-bold mb-6"><i class="fas fa-list text-lavender-main mr-2"></i>My Active Catalogue</h3>
+                <div id="myServicesList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+        </main>
+    </div>
+
+    <div id="profileModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[200] backdrop-blur-sm p-4">
+        <div class="bg-white w-full max-w-md rounded-[2.5rem] p-10 shadow-2xl relative">
+            <button onclick="toggleProfileModal()" class="absolute top-6 right-6 text-gray-400 hover:text-black text-2xl">&times;</button>
+            <h3 class="text-2xl font-bold mb-6 text-gray-900">Contact Details</h3>
+            <form id="profileForm" class="space-y-4">
+                <input type="text" id="phoneInput" placeholder="Phone Number (e.g., 0712345678)" class="w-full p-4 bg-lavender-soft rounded-2xl outline-none" required>
+                <input type="text" id="hostelInput" placeholder="Location/Hostel (e.g., MESS Hostel)" class="w-full p-4 bg-lavender-soft rounded-2xl outline-none" required>
+                <button type="submit" class="w-full bg-lavender-main text-white py-5 rounded-2xl font-bold shadow-xl hover:bg-black transition">Save Info</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="serviceModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[100] backdrop-blur-sm p-4">
+        <div class="bg-white w-full max-w-md rounded-[2.5rem] p-10 shadow-2xl relative">
+            <button onclick="toggleServiceModal()" class="absolute top-6 right-6 text-gray-400 hover:text-black text-2xl">&times;</button>
+            <h3 class="text-2xl font-bold mb-6 text-gray-900">Publish to Catalogue</h3>
+            <form id="serviceForm" class="space-y-4">
+                <select id="serviceCategory" class="w-full p-4 bg-lavender-soft rounded-2xl outline-none" required>
+                    <option value="" disabled selected>Select Category</option>
+                    <option value="Hair">Hair Styling</option>
+                    <option value="Nails">Nail Art</option>
+                    <option value="Makeup">Makeup</option>
+                    <option value="Skin Care">Skin Care</option>
+                    <option value="Piercing">Piercing</option> </select>
+                <input type="text" id="serviceTitle" placeholder="Service Title (e.g., Nose Piercing)" class="w-full p-4 bg-lavender-soft rounded-2xl outline-none" required>
+                <input type="number" id="servicePrice" placeholder="Price (KSh)" class="w-full p-4 bg-lavender-soft rounded-2xl outline-none" required>
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-400 ml-2 uppercase">Service Photo</label>
+                    <input type="file" id="serviceImage" class="w-full p-4 bg-lavender-soft rounded-2xl text-sm" accept="image/*" required>
+                </div>
+                <button type="submit" id="publishBtn" class="w-full bg-lavender-main text-white py-5 rounded-2xl font-bold shadow-xl">Publish Service</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="uploadModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[100] backdrop-blur-sm">
+        <div class="bg-white p-10 rounded-[2.5rem] max-w-md w-full shadow-2xl relative">
+            <button onclick="toggleUploadModal()" class="absolute top-6 right-6 text-gray-400 hover:text-black text-2xl">&times;</button>
+            <h3 class="text-2xl font-bold mb-2 text-gray-900">Add to Portfolio</h3>
+            <form id="uploadForm" class="space-y-4">
+                <input type="file" id="imageInput" class="w-full p-4 bg-lavender-soft rounded-2xl text-sm" accept="image/*" required>
+                <input type="text" id="imgDesc" placeholder="Description of your work" class="w-full p-4 bg-lavender-soft rounded-2xl outline-none" required>
+                <button type="submit" id="uploadBtn" class="w-full bg-lavender-main text-white py-5 rounded-2xl font-bold">Upload</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        const username = localStorage.getItem('username');
+        const API_URL = 'http://localhost:5000/api';
+
+        if (!token || localStorage.getItem('role') !== 'provider') window.location.href = 'landing.html';
+
+        window.toggleProfileModal = () => document.getElementById('profileModal').classList.toggle('hidden');
+        window.toggleNotifDropdown = () => document.getElementById('notifDropdown').classList.toggle('hidden');
+        window.toggleServiceModal = () => document.getElementById('serviceModal').classList.toggle('hidden');
+        window.toggleUploadModal = () => document.getElementById('uploadModal').classList.toggle('hidden');
+        window.logout = () => { localStorage.clear(); window.location.href = 'landing.html'; };
+
+        window.updateStatus = async function(id, status) {
+            try {
+                const res = await fetch(`${API_URL}/bookings/update/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ status })
+                });
+                if (res.ok) { alert(`Booking ${status}!`); init(); }
+                else { const err = await res.json(); alert(err.message); }
+            } catch (e) { alert("Connection Error"); }
+        };
+
+        window.deleteService = async function(id) {
+            if (!confirm("Remove this service?")) return;
+            await fetch(`${API_URL}/services/delete/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+            init();
+        };
+
+        async function init() {
+            if (username) document.getElementById('stylistName').innerText = username;
+            try {
+                const pRes = await fetch(`${API_URL}/auth/profile`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const profile = await pRes.json();
+                document.getElementById('phoneInput').value = profile.phone_number || '';
+                document.getElementById('hostelInput').value = profile.hostel_location || '';
+
+                const bRes = await fetch(`${API_URL}/bookings/provider-bookings`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const bookings = await bRes.json();
+                renderBookings(bookings);
+
+                const paidBookings = bookings.filter(b => b.status === 'Paid' || b.status === 'Completed');
+                const totalEarnings = paidBookings.length * 500;
+                document.getElementById('bookingsStat').innerText = bookings.length;
+                document.getElementById('earningsStat').innerText = totalEarnings;
+
+                const svRes = await fetch(`${API_URL}/services/my-services`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const svs = await svRes.json();
+                renderServices(svs);
+
+                fetchProviderReviews();
+                fetchNotifications();
+            } catch (e) { console.error("Init error:", e); }
+        }
+
+        function renderBookings(list) {
+            const container = document.getElementById('bookingList');
+            if (list.length === 0) {
+                container.innerHTML = '<p class="text-center py-10 text-gray-400 italic">No pending appointments.</p>';
+                return;
+            }
+            container.innerHTML = list.map(b => {
+                const isPaid = b.status === 'Paid' || b.status === 'Completed';
+                const paymentBadge = isPaid 
+                    ? `<span class="bg-green-100 text-green-600 text-[10px] font-black px-2 py-1 rounded-md uppercase ml-2"><i class="fas fa-check-circle"></i> Deposit Paid</span>` 
+                    : `<span class="bg-yellow-100 text-yellow-600 text-[10px] font-black px-2 py-1 rounded-md uppercase ml-2 tracking-tight">Awaiting Payment</span>`;
+
+                return `
+                    <div class="flex justify-between items-center p-6 bg-white rounded-3xl border ${isPaid ? 'border-green-200' : 'border-lavender-glow'} shadow-sm hover:shadow-md transition">
+                        <div>
+                            <div class="flex items-center">
+                                <p class="font-bold text-lg text-gray-900">${b.service_name}</p>
+                                ${paymentBadge}
+                            </div>
+                            <p class="text-sm text-gray-500 font-medium">Client: ${b.customer_name} | ${new Date(b.appointment_date).toLocaleDateString()}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            ${b.status === 'Pending' ? `<button onclick="updateStatus(${b.id}, 'Confirmed')" class="bg-green-500 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-green-600 transition">Confirm</button>` : ''}
+                            <button onclick="updateStatus(${b.id}, 'Cancelled')" class="text-red-500 bg-red-50 px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-100 transition">Decline</button>
+                            ${b.status === 'Paid' ? `<button onclick="updateStatus(${b.id}, 'Completed')" class="bg-lavender-main text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-black transition">Mark Done</button>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function fetchProviderReviews() {
+            try {
+                const res = await fetch(`${API_URL}/reviews/my-reviews`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const reviews = await res.json();
+                const container = document.getElementById('providerReviewsList');
+                if (!reviews.length) {
+                    container.innerHTML = '<p class="text-center py-10 text-gray-400 italic">No reviews yet.</p>';
+                    return;
+                }
+                container.innerHTML = reviews.map(r => `
+                    <div class="p-5 bg-white rounded-2xl border border-lavender-glow shadow-sm">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-bold text-lavender-main text-sm">${r.customer_name}</span> 
+                            <div class="text-yellow-400 text-xs">${'<i class="fas fa-star"></i>'.repeat(r.rating)}</div>
+                        </div>
+                        <p class="text-gray-700 text-sm italic">"${r.comment}"</p>
+                        <div class="mt-2 text-[10px] font-bold text-gray-400 uppercase">Service: ${r.service_name}</div>
+                    </div>
+                `).join('');
+                if (reviews.length > 0) {
+                    const avg = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+                    document.getElementById('ratingStat').innerText = avg.toFixed(1);
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        async function fetchNotifications() {
+            try {
+                const res = await fetch(`${API_URL}/bookings/notifications`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const notifs = await res.json();
+                if (notifs.length > 0) {
+                    document.getElementById('notifBadge').classList.remove('hidden');
+                    document.getElementById('notifList').innerHTML = notifs.map(n => `
+                        <div class="p-3 bg-lavender-soft rounded-xl border border-lavender-glow">
+                            <p class="font-bold text-gray-800 leading-snug">${n.message}</p>
+                            <span class="text-[10px] text-gray-400">${new Date(n.created_at).toLocaleTimeString()}</span>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        function renderServices(list) {
+            const container = document.getElementById('myServicesList');
+            container.innerHTML = list.map(s => `
+                <div class="p-4 bg-white rounded-2xl border border-lavender-glow flex items-center gap-4 shadow-sm">
+                    <img src="http://localhost:5000/uploads/services/${s.image_url}" class="w-14 h-14 rounded-xl object-cover shadow-sm" onerror="this.src='https://via.placeholder.com/60'">
+                    <div class="flex-grow">
+                        <p class="font-bold text-gray-900">${s.title}</p>
+                        <p class="text-xs text-lavender-main font-bold uppercase tracking-wider">KSh ${s.price}</p>
+                    </div>
+                    <button onclick="deleteService(${s.id})" class="text-red-400 hover:text-red-600 transition"><i class="fas fa-trash-alt"></i></button>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('profileForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const data = { phone_number: document.getElementById('phoneInput').value, hostel_location: document.getElementById('hostelInput').value };
+            const res = await fetch(`${API_URL}/auth/update-profile`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(data) });
+            if (res.ok) { alert("Profile saved!"); toggleProfileModal(); }
+        };
+
+        document.getElementById('serviceForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('category', document.getElementById('serviceCategory').value);
+            formData.append('title', document.getElementById('serviceTitle').value);
+            formData.append('price', document.getElementById('servicePrice').value);
+            formData.append('serviceImage', document.getElementById('serviceImage').files[0]);
+            const res = await fetch(`${API_URL}/services/add`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: formData });
+            if (res.ok) { alert("Piercing/Service Published!"); toggleServiceModal(); init(); }
+        };
+
+        init();
+    </script>
+</body>
+</html>

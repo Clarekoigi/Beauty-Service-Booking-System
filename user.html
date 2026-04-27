@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Beauty Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'lavender-main': '#8b5cf6',
+                        'lavender-soft': '#f5f3ff',
+                        'lavender-glow': '#ddd6fe',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .status-badge { @apply px-3 py-1 rounded-full text-xs font-bold uppercase; }
+    </style>
+</head>
+<body class="bg-lavender-soft min-h-screen font-sans text-gray-900">
+
+    <div class="flex">
+        <aside class="w-64 bg-white h-screen sticky top-0 border-r border-lavender-glow p-6 hidden md:block">
+            <div class="flex items-center gap-2 mb-10">
+                <div class="w-8 h-8 bg-lavender-main rounded-lg flex items-center justify-center text-white text-xs">
+                    <i class="fas fa-sparkles"></i>
+                </div>
+                <span class="text-xl font-serif font-bold italic">BeautyHub</span>
+            </div>
+            
+            <nav class="space-y-4">
+                <a href="#" class="flex items-center gap-3 p-4 bg-lavender-main text-white rounded-2xl shadow-lg shadow-lavender-main/20">
+                    <i class="fas fa-th-large"></i> <span class="font-bold">Overview</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 p-4 text-gray-500 hover:bg-lavender-soft hover:text-lavender-main rounded-2xl transition">
+                    <i class="fas fa-calendar-alt"></i> <span class="font-bold">Bookings</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 p-4 text-gray-500 hover:bg-lavender-soft hover:text-lavender-main rounded-2xl transition">
+                    <i class="fas fa-heart"></i> <span class="font-bold">Favorites</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 p-4 text-gray-500 hover:bg-lavender-soft hover:text-lavender-main rounded-2xl transition">
+                    <i class="fas fa-cog"></i> <span class="font-bold">Settings</span>
+                </a>
+            </nav>
+        </aside>
+
+        <main class="flex-grow p-6 lg:p-10">
+            <header class="flex justify-between items-center mb-10">
+                <div>
+                    <h1 class="text-3xl font-serif font-bold">Hello, Student! 👋</h1>
+                    <p class="text-gray-500">Ready for your next glow-up?</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center border border-lavender-glow text-gray-400">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <img src="https://ui-avatars.com/api/?name=User&background=8b5cf6&color=fff" class="w-12 h-12 rounded-full border-2 border-white shadow-md">
+                </div>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div class="glass-card p-6 rounded-3xl shadow-sm border-l-4 border-lavender-main">
+                    <p class="text-gray-400 text-sm font-bold uppercase">Upcoming</p>
+                    <h2 class="text-3xl font-bold mt-1">2</h2>
+                </div>
+                <div class="glass-card p-6 rounded-3xl shadow-sm">
+                    <p class="text-gray-400 text-sm font-bold uppercase">Total Bookings</p>
+                    <h2 class="text-3xl font-bold mt-1">14</h2>
+                </div>
+                <div class="glass-card p-6 rounded-3xl shadow-sm">
+                    <p class="text-gray-400 text-sm font-bold uppercase">Reviews Left</p>
+                    <h2 class="text-3xl font-bold mt-1">12</h2>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-[2.5rem] overflow-hidden shadow-xl border-white">
+                <div class="p-8 border-b border-lavender-glow flex justify-between items-center">
+                    <h3 class="text-xl font-bold">Recent Appointments</h3>
+                    <button class="text-lavender-main font-bold text-sm">View All</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="bg-lavender-soft/50 text-gray-500 text-xs uppercase tracking-widest">
+                            <tr>
+                                <th class="p-6">Stylist</th>
+                                <th class="p-6">Service</th>
+                                <th class="p-6">Date</th>
+                                <th class="p-6">Status</th>
+                                <th class="p-6">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-lavender-glow">
+                            <tr>
+                                <td class="p-6">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-purple-100 rounded-xl"></div>
+                                        <span class="font-bold">Mercy J.</span>
+                                    </div>
+                                </td>
+                                <td class="p-6 text-gray-600">Knotless Braids</td>
+                                <td class="p-6 text-gray-600">Mar 15, 2:00 PM</td>
+                                <td class="p-6">
+                                    <span class="status-badge bg-green-100 text-green-600">Confirmed</span>
+                                </td>
+                                <td class="p-6">
+                                    <button class="text-gray-400 hover:text-lavender-main"><i class="fas fa-ellipsis-h"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-6">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-blue-100 rounded-xl"></div>
+                                        <span class="font-bold">Alex W.</span>
+                                    </div>
+                                </td>
+                                <td class="p-6 text-gray-600">Gel Polish</td>
+                                <td class="p-6 text-gray-600">Mar 12, 10:00 AM</td>
+                                <td class="p-6">
+                                    <span class="status-badge bg-purple-100 text-purple-600 italic">Needs Review</span>
+                                </td>
+                                <td class="p-6">
+                                    <button onclick="alert('Opening Review Portal...')" class="bg-lavender-main text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md hover:bg-lavender-deep transition">Leave Review</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
