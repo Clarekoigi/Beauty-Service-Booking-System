@@ -1,2 +1,5 @@
 # Beauty-Service-Booking-System
-The system focuses exclusively on the campus beauty niche (Hair, Nails, Makeup, Skin Care and Piercing). It handles the flow from user registration and service listing to appointment confirmation and post-service review.
+Beauty Service Booking System is designed to connect customers with beauty service providers through a centralized digital platform.
+The system will allow service providers to register their businesses, list their services and manage appointments, while customers will be able to search for services, book appointments, make payments and leave reviews.
+This system aims to improve service discovery, booking efficiency and customer trust.
+
